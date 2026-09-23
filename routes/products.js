@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import Product from "../models/products.js";
+import { withDb } from "../db.js";
 
 const findAllProducts = async (req, res) => {
   try {
@@ -37,7 +38,7 @@ const findOneProduct = async (req, res) => {
 // asi que la forma mas simple de cerrarlo es no exponerlos. Si alguna vez hace
 // falta un panel de administracion, vuelven CON un middleware de autenticacion
 // adelante, nunca sueltas. El codigo viejo esta en el historial.
-router.get("/", findAllProducts);
-router.get("/:id", findOneProduct);
+router.get("/", withDb, findAllProducts);
+router.get("/:id", withDb, findOneProduct);
 
 export default router;

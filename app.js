@@ -13,7 +13,11 @@ const app = express();
 
 // DB Connection
 import { connectDb } from "./db.js";
-connectDb();
+// Se intenta conectar al arrancar para que el primer pedido no pague la espera.
+// Si falla no pasa nada: `withDb` reintenta en el proximo pedido. El .catch()
+// vacio es necesario, porque sin el la promesa rechazada burbujea como unhandled
+// rejection y Node tira el proceso abajo.
+connectDb().catch(() => {});
 
 /* Settings */
 app.set("port", process.env.PORT || 4000);
@@ -37,6 +41,11 @@ app.use(
 );
 
 /* Routes */
+// La guarda de base de datos (`withDb`) no va aca sino adentro de cada router,
+// pegada a los handlers que consultan Mongo. Colgarla del prefijo la haria
+// correr tambien para rutas que no existen, y entonces `POST /products` —que
+// tiene que contestar 404 porque esa ruta se saco— contestaria 503 cada vez que
+// la base estuviera caida.
 app.use("/", indexRoutes);
 app.use("/products", productsRoutes);
 app.use("/categories", categoriesRoutes);

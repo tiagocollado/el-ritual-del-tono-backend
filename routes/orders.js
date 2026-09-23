@@ -1,6 +1,7 @@
 import express from "express";
 const router = express.Router();
 import Order from "../models/order.js";
+import { withDb } from "../db.js";
 
 
 const addOrder = async (req, res) => {
@@ -15,6 +16,6 @@ const addOrder = async (req, res) => {
 }
 
 
-router.post("/", addOrder);
+router.post("/", withDb, addOrder);
 
 export default router;

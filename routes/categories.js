@@ -1,5 +1,6 @@
 import express from "express";
 import Category from "../models/category.js";
+import { withDb } from "../db.js";
 
 const router = express.Router();
 
@@ -32,7 +33,7 @@ const findOneArtistBySlug = async (req, res) => {
 };
 
 // Endpoints principales
-router.get("/", findAllArtists);
-router.get("/:slug", findOneArtistBySlug); // Ruta clave para la página de Artista
+router.get("/", withDb, findAllArtists);
+router.get("/:slug", withDb, findOneArtistBySlug); // Ruta clave para la página de Artista
 
 export default router;
