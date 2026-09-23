@@ -43,9 +43,14 @@ app.use("/categories", categoriesRoutes);
 app.use("/orders", ordersRoutes);
 
 /* Error handler  */
-// catch 404 and forward to error handler
-app.use(function (req, res, next) {
-  next(createError(404));
+// 404: cualquier ruta que no matcheo ninguna de arriba.
+//
+// Antes esto llamaba a `createError(404)`, una funcion que nunca se importo,
+// asi que el 404 explotaba y el handler de abajo devolvia 500 con el texto
+// "createError is not defined" — o sea, una URL mal escrita contestaba un
+// error de servidor con el nombre de una funcion interna adentro.
+app.use(function (req, res) {
+  res.status(404).send({ message: "Not found" });
 });
 
 app.use(function (err, req, res, next) {
